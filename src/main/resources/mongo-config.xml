@@ -12,15 +12,29 @@
 
     <context:property-placeholder location="messages.properties" />
 
-    <mongo:repositories base-package="maven.mongo" mongo-template-ref="mongoTemplate"/>
+    <mongo:repositories base-package="com.csam.wsc.swisscard.dip.cache.dao.repository" mongo-template-ref="mongoTemplate"/>
 
-    <mongo:db-factory id="mongoDbFactory" dbname="${mongo.database}"
-                      username="${mongo.username}" password="${mongo.password}" mongo-ref="mongo" />
+    <!--<mongo:db-factory id="mongoDbFactory" dbname="${mongo.database}"
+                      username="${mongo.username}" password="${mongo.password}" mongo-ref="mongo" />-->
+
+    <!--<mongo:db-factory id="mongoDbFactory" dbname="swisscard"-->
+                      <!--username="swisscard" password="swisscard123" mongo-ref="mongo" />-->
+
+    <bean id="mongoDbFactory" class="converter.MongoDbFactory"/>
 
     <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
         <constructor-arg name="mongoDbFactory" ref="mongoDbFactory"/>
+        <constructor-arg name="mongoConverter" ref="mappingMongoConverter" />
     </bean>
 
-    <mongo:mongo id="mongo" host="${mongo.host}" port="${mongo.port}" />
+    <mongo:mongo id="mongo" host="mongo-dev.smartdev.vn" port="27017" />
+
+    <mongo:mapping-converter id="mappingMongoConverter">
+        <mongo:custom-converters>
+            <mongo:converter>
+                <bean class="converter.MongoStringReadConverter" />
+            </mongo:converter>
+        </mongo:custom-converters>
+    </mongo:mapping-converter>
 
 </beans>
